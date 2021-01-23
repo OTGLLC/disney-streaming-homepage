@@ -20,16 +20,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ExternalLibs\glad\src\glad.c" />
+    <ClCompile Include="Homepage.cpp" />
+    <ClCompile Include="HomepageMain.cpp" />
+    <ClCompile Include="ManualPopulation.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Source\HellowWindow.cpp" />
-    <ClCompile Include="Source\Homepage.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureRenderer.cpp" />
+    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Homepage.h" />
+    <ClInclude Include="ManualPopulation.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Source\Homepage.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureRenderer.h" />
+    <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileGroup.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -91,7 +102,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)/ExternalLibs/glad/include/;$(SolutionDir)/ExternalLibs/GLFW/include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)/ExternalLibs;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)/ExternalLibs/GLFW/lib/x64;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SolutionDir)/ExternalLibs/glad/src;$(SourcePath)</SourcePath>
     <ReferencePath>$(SolutionDir)/disney-streaming-homepage/Source;$(ReferencePath)</ReferencePath>
@@ -133,7 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)/ExternalLibs/glad/include/;$(SolutionDir)/ExternalLibs/GLFW/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/ExternalLibs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
