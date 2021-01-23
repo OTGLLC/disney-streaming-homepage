@@ -22,6 +22,7 @@
     <ClCompile Include="..\ExternalLibs\glad\src\glad.c" />
     <ClCompile Include="Homepage.cpp" />
     <ClCompile Include="HomepageMain.cpp" />
+    <ClCompile Include="HomepageObject.cpp" />
     <ClCompile Include="ManualPopulation.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -33,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Homepage.h" />
+    <ClInclude Include="HomepageObject.h" />
     <ClInclude Include="ManualPopulation.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
