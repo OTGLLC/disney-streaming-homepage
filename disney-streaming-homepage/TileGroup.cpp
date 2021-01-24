@@ -32,5 +32,5 @@ void TileGroup::DrawTiles(TextureRenderer& renderer)
 }
 void TileGroup::DrawText(TextRenderer& textRend)
 {
-     textRend.RenderText(this->TileGroupName,this->xPosition,this->yPosition - 50.0f, 1.0f);
+     textRend.RenderText(this->TileGroupName,this->xPosition,this->yPosition - 50., 1.0f);
 }

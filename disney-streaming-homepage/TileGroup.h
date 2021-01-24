@@ -9,6 +9,8 @@
 class TileGroup
 {
 	public:
+		float xPosition;
+		float yPosition;
 	  int RowPosition;
 	  float TileHeight;
 	  const char* TileGroupName;
@@ -21,8 +23,7 @@ class TileGroup
 	  void DrawTiles(TextureRenderer& renderer);
 	  void DrawText(TextRenderer& textRend);
 
-	  private:
-	  float xPosition;
-	  float yPosition;
+	
+	  
 };
 #endif

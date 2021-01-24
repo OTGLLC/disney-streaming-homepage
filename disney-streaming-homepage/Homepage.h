@@ -15,10 +15,11 @@ public:
 	float TileGroupYSpace;
 	HomepageState State;
 	bool Keys[1024];
-	unsigned int Width, Height, ResolutionWidth, ResolutionHeight;
+	float MaxInputDelay;
+	unsigned int Width, Height, ResolutionWidth, ResolutionHeight,CurrentColumnSelection,CurrentRowSelection;
 	std::vector<TileGroup> TileGroups;
 
-	Homepage(unsigned int width, unsigned int height,unsigned int targetResolutionWidth,unsigned int targetResolutionHeight, float tileGroupYSpace );
+	Homepage(unsigned int width, unsigned int height,unsigned int targetResolutionWidth,unsigned int targetResolutionHeight, float tileGroupYSpace, float maxInputDelay );
 	~Homepage();
 	void DrawSplashScreen();
 	void PopulateTileGroups(float xScale, float yScale);
@@ -29,6 +30,7 @@ public:
 
 	private:
 		void InitializeTileGroupPositions();
+		float timeSinceLastInput;
 	
 };
 
