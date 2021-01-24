@@ -2,12 +2,16 @@
 #define RESOURCE_MANAGER_H
 
 #include <map>
+#include <vector>
 #include <string>
+#include <ostream>
 
 #include <glad/include/glad/glad.h>
-
+#include "rapidjson/document.h"
 #include "Texture.h"
 #include "Shader.h"
+
+
 
 
 // A static singleton ResourceManager class that hosts several
@@ -21,6 +25,7 @@ public:
 	// resource storage
 	static std::map<std::string, Shader>    Shaders;
 	static std::map<std::string, Texture> Textures;
+	static std::map<std::string, std::vector<std::string>> HomepageElements;
 	 //loads (and generates) a shader program from file loading vertex, fragment (and geometry) shader's source code. If gShaderFile is not nullptr, it also loads a geometry shader
 	static Shader    LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name);
 	// retrieves a stored sader
@@ -29,6 +34,8 @@ public:
 	static Texture LoadTexture(const char* file, bool alpha, std::string name);
 	// retrieves a stored texture
 	static Texture& GetTexture(std::string name);
+
+	static void PrepareHompageData(const char* url);
 	// properly de-allocates all loaded resources
 	static void      Clear();
 private:
@@ -38,6 +45,15 @@ private:
 	static Shader    loadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile = nullptr);
 	// loads a single texture from file
 	static Texture loadTextureFromFile(const char* file, bool alpha);
+	static void DownloadImageFromURL(const char* url, std::string imageName );
+	static size_t WriteCallback(void *ptr, size_t size, size_t nmemb, void* data);
+	static std::stringstream GetHomepageJSON(const char* url);
+	static void ParseHomepageJson(std::stringstream& jsonStream);
+	static void GetEditorialTileGroupFromContainerSet(const rapidjson::Value& containerSet);
+	static void GetRefSetTileGroupFromContainerSet(const rapidjson::Value& containerSet);
+	static void GetTilesFromContainerSet(const rapidjson::Value& containerSet);
+	
+
 };
 
 #endif

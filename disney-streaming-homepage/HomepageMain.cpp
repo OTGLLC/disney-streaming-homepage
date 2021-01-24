@@ -6,14 +6,14 @@
 #include "Homepage.h"
 #include "ResourceManager.h"
 #include "TileGroup.h"
-#include "ManualPopulation.h"
+
 
 #include <iostream>
 #include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void PopulateTileGroups();
+
 
 
 const unsigned int SCREEN_WIDTH = 1920;
@@ -53,7 +53,6 @@ int main()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	hPage.Init();
-	PopulateTileGroups();
 
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
@@ -112,13 +111,5 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
-}
-
-void PopulateTileGroups()
-{
-   std::vector<TileGroup> groups;
-   groups.push_back(ManualPopulation::CreateNewToDisneyTileGroup());
-
-	hPage.PopulateTileGroups(groups);
 }
 

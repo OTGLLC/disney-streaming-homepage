@@ -17,17 +17,20 @@ Homepage::~Homepage()
 }
 void Homepage::Init()
 {
-	// load shaders
+	ResourceManager::PrepareHompageData("https://cd-static.bamgrid.com/dp-117731241344/home.json");
+
+	//// load shaders
 	ResourceManager::LoadShader("shaders/sprite.vs", "shaders/sprite.frag", nullptr, "sprite");
-	// configure shaders
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->Width),
-		static_cast<float>(this->Height), 0.0f, -1.0f, 1.0f);
-	ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
-	ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
-	// set render-specific controls
-	Renderer = new TextureRenderer(ResourceManager::GetShader("sprite"));
-	// load textures
-	ResourceManager::LoadTexture("textures/awesomeface.png", true, "face");
+	//// configure shaders
+	//glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->Width),
+	//	static_cast<float>(this->Height), 0.0f, -1.0f, 1.0f);
+	//ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
+	//ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
+	//// set render-specific controls
+	//Renderer = new TextureRenderer(ResourceManager::GetShader("sprite"));
+	//// load textures
+	////ResourceManager::LoadTexture("textures/temp.jpg", false, "face");
+	
 }
 void Homepage::ProcessInput(float dt)
 {
@@ -39,7 +42,7 @@ void Homepage::Update(float dt)
 }
 void Homepage::Render()
 {
-	Renderer->DrawTexture(ResourceManager::GetTexture("face"), glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	/*Renderer->DrawTexture(ResourceManager::GetTexture("Test Image"), glm::vec2(200.0f, 200.0f), glm::vec2(300.0f, 400.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f));*/
 }
 void Homepage::PopulateTileGroups(std::vector<TileGroup> tileGroups)
 {

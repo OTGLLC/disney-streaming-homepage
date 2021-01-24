@@ -45,10 +45,10 @@
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ManualPopulation.cpp">
+    <ClCompile Include="HomepageObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HomepageObject.cpp">
+    <ClCompile Include="DisplayObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,10 +77,10 @@
     <ClInclude Include="Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ManualPopulation.h">
+    <ClInclude Include="HomepageObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HomepageObject.h">
+    <ClInclude Include="DisplayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
