@@ -3,6 +3,8 @@
 #include <glad/include/glad/glad.h>
 #include<GLFW/include/glfw3.h>
 
+
+
 #include "Homepage.h"
 #include "ResourceManager.h"
 #include "TileGroup.h"
@@ -19,7 +21,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const unsigned int SCREEN_WIDTH = 1920;
 const unsigned int SCREEN_HEIGHT = 1080;
 
-Homepage hPage(SCREEN_WIDTH,SCREEN_HEIGHT);
+const unsigned int RENDER_RESOLUION_WIDTH = 3840;
+const unsigned int RENDER_RESOLUION_HEIGHT = 2160;
+
+const float TILE_GROUP_Y_SPACE = 100.0f;
+
+float aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+Homepage hPage(SCREEN_WIDTH,SCREEN_HEIGHT, RENDER_RESOLUION_WIDTH,RENDER_RESOLUION_HEIGHT,TILE_GROUP_Y_SPACE);
 
 int main()
 {
@@ -30,7 +39,7 @@ int main()
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-	glfwWindowHint(GLFW_RESIZABLE, false);
+	glfwWindowHint(GLFW_RESIZABLE, true);
 
 	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
@@ -48,9 +57,15 @@ int main()
 
 	// OpenGL configuration
 	// --------------------
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	glViewport(0, 0, SCREEN_WIDTH,SCREEN_HEIGHT);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	hPage.DrawSplashScreen();
+	glfwSwapBuffers(window);
 
 	hPage.Init();
 
@@ -108,8 +123,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+	
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 

@@ -19,9 +19,9 @@
 
 
 // Instantiate static variables
-std::map<std::string, Texture>    ResourceManager::Textures;
-std::map<std::string, Shader>     ResourceManager::Shaders;
-std::map<std::string, std::vector<std::string>> HomepageElements;
+std::map<std::string, Texture>					ResourceManager::Textures;
+std::map<std::string, Shader>					ResourceManager::Shaders;
+std::map<std::string, std::vector<ResourceManager::HomepageImage>> ResourceManager::HomepageElements;
 
 
 Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name)
@@ -221,12 +221,11 @@ void ResourceManager::ParseHomepageJson(std::stringstream& jsonStream)
 
 		  if (!refId)
 		  {
-			  GetEditorialTileGroupFromContainerSet(containerSet);
 			  GetTilesFromContainerSet(containerSet);
 		  }
 		  else
 		  {
-			 GetRefSetTileGroupFromContainerSet(containerSet);
+			 GetRefContainerDetails(containerSet);
 		  }
 		  
 	}
@@ -234,21 +233,7 @@ void ResourceManager::ParseHomepageJson(std::stringstream& jsonStream)
 	
 }
 
-void ResourceManager::GetEditorialTileGroupFromContainerSet(const rapidjson::Value& containerSet)
-{
-	using namespace rapidjson;
-
-	const Value& pageSize = containerSet["meta"]["page_size"];
-	assert(pageSize.IsInt());
-
-	const Value& containerTitle = containerSet["text"]["title"]["full"]["set"]["default"]["content"];
-	assert(containerTitle.IsString());
-
-	
-	std::cout << containerTitle.GetString() << " : "<<pageSize.GetInt() << std::endl;
-	
-}
-void ResourceManager::GetRefSetTileGroupFromContainerSet(const rapidjson::Value& containerSet)
+void ResourceManager::GetRefContainerDetails(const rapidjson::Value& containerSet)
 {
 	using namespace rapidjson;
 
@@ -267,16 +252,18 @@ void ResourceManager::GetTilesFromContainerSet(const rapidjson::Value& container
 {
 	using namespace rapidjson;
 
-     const Value& items = containerSet["items"];
-	 assert(items.IsArray());
+	std::vector<HomepageImage> hpImages;
+
+    const Value& items = containerSet["items"];
+	const Value& pageSize = containerSet["meta"]["page_size"];
+	const Value& containerTitle = containerSet["text"]["title"]["full"]["set"]["default"]["content"];
+	
 
 	for (SizeType i = 0; i < items.Size(); i++)
 	{
 		
 		const Value& itemParent = items[i];
 		
-		
-
 		if(itemParent["text"]["title"]["full"].HasMember("program"))
 		{
 			const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["program"]["default"]["url"];
@@ -285,17 +272,28 @@ void ResourceManager::GetTilesFromContainerSet(const rapidjson::Value& container
 			
 			std::string str(titleName.GetString());
 			std::string filePath("textures/"+str+".jpg");
-
-			
+			std::string url(imageUrl.GetString());
+			HomepageImage img{str,filePath,url};
+			hpImages.push_back(img);
 			
 			DownloadImageFromURL(imageUrl.GetString(),filePath);
-			std::cout << titleName.GetString() << " : " << imageUrl.GetString() << std::endl;
+			
 		}
 		else if (itemParent["text"]["title"]["full"].HasMember("collection"))
 		{
 			const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["default"]["default"]["url"];
 			const Value& titleName = items[i]["text"]["title"]["full"]["collection"]["default"]["content"];
 			assert(titleName.IsString());
+
+			std::string str(titleName.GetString());
+			std::string filePath("textures/" + str + ".jpg");
+			std::string url(imageUrl.GetString());
+			HomepageImage img{ str,filePath,url };
+			hpImages.push_back(img);
+
+			DownloadImageFromURL(imageUrl.GetString(), filePath);
+			
+
 			std::cout << titleName.GetString() << " : " << imageUrl.GetString() << std::endl;
 		}
 		else
@@ -305,15 +303,16 @@ void ResourceManager::GetTilesFromContainerSet(const rapidjson::Value& container
 			assert(titleName.IsString());
 			std::string str(titleName.GetString());
 			std::string filePath("textures/" + str + ".jpg");
-
+			std::string url(imageUrl.GetString());
+			HomepageImage img{ str,filePath,url };
+			hpImages.push_back(img);
 			DownloadImageFromURL(imageUrl.GetString(), filePath);
+			
 			std::cout << titleName.GetString() << " : " << imageUrl.GetString() << std::endl;
 		}
-		
 
-		
-
-		
 	}
+
+	HomepageElements[containerTitle.GetString()] = hpImages;
 
 }

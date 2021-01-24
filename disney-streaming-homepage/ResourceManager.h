@@ -21,11 +21,19 @@
 // public constructor is defined.
 class ResourceManager
 {
+	struct HomepageImage
+	{
+		public:
+		std::string ImageName;
+		std::string ImagePath;
+		std::string ImageUrl;
+
+	};
 public:
 	// resource storage
 	static std::map<std::string, Shader>    Shaders;
 	static std::map<std::string, Texture> Textures;
-	static std::map<std::string, std::vector<std::string>> HomepageElements;
+	static std::map<std::string, std::vector<HomepageImage>> HomepageElements;
 	 //loads (and generates) a shader program from file loading vertex, fragment (and geometry) shader's source code. If gShaderFile is not nullptr, it also loads a geometry shader
 	static Shader    LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name);
 	// retrieves a stored sader
@@ -49,8 +57,7 @@ private:
 	static size_t WriteCallback(void *ptr, size_t size, size_t nmemb, void* data);
 	static std::stringstream GetHomepageJSON(const char* url);
 	static void ParseHomepageJson(std::stringstream& jsonStream);
-	static void GetEditorialTileGroupFromContainerSet(const rapidjson::Value& containerSet);
-	static void GetRefSetTileGroupFromContainerSet(const rapidjson::Value& containerSet);
+	static void GetRefContainerDetails(const rapidjson::Value& containerSet);
 	static void GetTilesFromContainerSet(const rapidjson::Value& containerSet);
 	
 

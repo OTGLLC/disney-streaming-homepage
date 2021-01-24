@@ -11,5 +11,5 @@ DisplayObject::DisplayObject(glm::vec2 pos, glm::vec2 size, Texture image, glm::
 }
 void DisplayObject::Draw(TextureRenderer& renderer)
 {
-	renderer.DrawTexture(this->Image,this->Position,this->Size,this->Rotation);
+	renderer.DrawTexture(this->Image,this->Position,this->Size);
 }
