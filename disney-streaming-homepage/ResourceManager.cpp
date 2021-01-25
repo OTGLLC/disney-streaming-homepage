@@ -9,7 +9,6 @@
 #include "Macros.h"
 #include "stb_image.h"
 #include "curl/include/curl/curl.h"
-
 #include "curlcpp/include/curl_easy.h"
 #include "curlcpp/include/curl_form.h"
 #include "curlcpp/include/curl_ios.h"
@@ -18,27 +17,13 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
-#define JSON_ONELEVEL	[a]
-#define JSON_TWOLEVEL	[a][b]
-#define JSON_THREELEVEL [a]b][c]
-#define JSON_FOURLEVEL	[a]b][c][d]
-#define JSON_FIVELEVEL	[a]b][c][d][e]
 
-//else if (itemParent["text"]["title"]["full"].HasMember("collection"))
-//		{
-//		const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["default"]["default"]["url"];
-//		const Value& titleName = items[i]["text"]["title"]["full"]["collection"]["default"]["content"];
-//if (itemParent["text"]["title"]["full"].HasMember("program"))
-//{
-//	const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["program"]["default"]["url"];
-//	const Value& titleName = items[i]["text"]["title"]["full"]["program"]["default"]["content"];
-//const Value& items = containerSet["items"];
-//const Value& pageSize = containerSet["meta"]["page_size"];
-//const Value& containerTitle = containerSet["text"]["title"]["full"]["set"]["default"]["content"];
-////["data"]["StandardCollection"]["containers"];
-//const Value& refId = containerSet["refId"];
-//const Value& refName = containerSet["text"]["title"]["full"]["set"]["default"]["content"];
-
+const char* jkey_series = "series";
+const char* jkey_tile = "tile";
+const char* jkey_items = "items";
+const char* jkey_meta = "meta";
+const char* jkey_page_size = "page_size";
+const char* jkey_set = "set";
 const char* jkey_text = "text";
 const char* jkey_title = "title";
 const char* jkey_full = "full";
@@ -51,6 +36,7 @@ const char* jkey_content = "content";
 const char* jkey_data = "data";
 const char* jkey_StandardCollection = "StandardCollection";
 const char* jkey_refId = "refId";
+const char* jkey_containers = "containers";
 
 
 
@@ -249,13 +235,13 @@ void ResourceManager::ParseHomepageJson(std::stringstream& jsonStream, const cha
 
 	d.Parse(jsonStream.str().c_str());
 	
-	const Value& containers = d["data"]["StandardCollection"]["containers"];
+	const Value& containers = d[jkey_data][jkey_StandardCollection][jkey_containers];
 
 	assert(containers.IsArray());
 	for (SizeType i = 0; i < containers.Size(); i++)
 	{
-	      const Value& containerSet = containers[i]["set"];
-		  auto refId = containerSet.HasMember("refId");
+	      const Value& containerSet = containers[i][jkey_set];
+		  auto refId = containerSet.HasMember(jkey_refId);
 
 		  if (!refId)
 		  {
@@ -275,12 +261,13 @@ void ResourceManager::GetRefContainerDetails(const rapidjson::Value& containerSe
 {
 	using namespace rapidjson;
 
-	const Value& refId = containerSet["refId"];
-	const Value& refName = containerSet["text"]["title"]["full"]["set"]["default"]["content"];
+	const Value& refId = containerSet[jkey_refId];
+	const Value& refName = containerSet[jkey_text][jkey_title][jkey_full][jkey_set][jkey_default][jkey_content];
 
-	std::cout << refName.GetString() << " : " << refId.GetString() <<std::endl;
+	OTG_LOG(refName.GetString()<<" : "<<refId.GetString());
 
 }
+
 /// <summary>
 /// Yep..its ugly..i dont like it but time is short
 /// Maybe research dynamic serialization.....ugh
@@ -292,9 +279,9 @@ void ResourceManager::GetContainerDetails(const rapidjson::Value& containerSet, 
 
 	std::vector<HomepageImage> hpImages;
 
-    const Value& items = containerSet["items"];
-	const Value& pageSize = containerSet["meta"]["page_size"];
-	const Value& containerTitle = containerSet["text"]["title"]["full"]["set"]["default"]["content"];
+    const Value& items = containerSet[jkey_items];
+	const Value& pageSize = containerSet[jkey_meta][jkey_page_size];
+	const Value& containerTitle = containerSet[jkey_text][jkey_title][jkey_full][jkey_set][jkey_default][jkey_content];
 	
 
 	for (SizeType i = 0; i < items.Size(); i++)
@@ -302,54 +289,40 @@ void ResourceManager::GetContainerDetails(const rapidjson::Value& containerSet, 
 		
 		const Value& itemParent = items[i];
 		
-		if(itemParent["text"]["title"]["full"].HasMember("program"))
+		if(itemParent[jkey_text][jkey_title][jkey_full].HasMember(jkey_program))
 		{
-			const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["program"]["default"]["url"];
-			const Value& titleName = items[i]["text"]["title"]["full"]["program"]["default"]["content"];
-
-			
-			std::string str(titleName.GetString());
-			std::string filePath("textures/"+str+".jpg");
-			std::string url(imageUrl.GetString());
-			HomepageImage img{str,filePath,url};
-			hpImages.push_back(img);
-			
-			DownloadImageFromURL(imageUrl.GetString(),filePath);
-			
+			DownloadTile(items[i], hpImages, jkey_program, jkey_program, aspectRatio);
 		}
-		else if (itemParent["text"]["title"]["full"].HasMember("collection"))
+		else if (itemParent[jkey_text][jkey_title][jkey_full].HasMember(jkey_collection))
 		{
-			const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["default"]["default"]["url"];
-			const Value& titleName = items[i]["text"]["title"]["full"]["collection"]["default"]["content"];
-
-			std::string str(titleName.GetString());
-			std::string filePath("textures/" + str + ".jpg");
-			std::string url(imageUrl.GetString());
-			HomepageImage img{ str,filePath,url };
-			hpImages.push_back(img);
-
-			DownloadImageFromURL(imageUrl.GetString(), filePath);
-			
-
-			std::cout << titleName.GetString() << " : " << imageUrl.GetString() << std::endl;
+			DownloadTile(items[i], hpImages, jkey_default, jkey_collection, aspectRatio);
 		}
 		else
 		{
-			const Value& imageUrl = items[i]["image"]["tile"]["1.78"]["series"]["default"]["url"];
-			const Value& titleName = items[i]["text"]["title"]["full"]["series"]["default"]["content"];
-
-			std::string str(titleName.GetString());
-			std::string filePath("textures/" + str + ".jpg");
-			std::string url(imageUrl.GetString());
-			HomepageImage img{ str,filePath,url };
-			hpImages.push_back(img);
-			DownloadImageFromURL(imageUrl.GetString(), filePath);
-			
-			std::cout << titleName.GetString() << " : " << imageUrl.GetString() << std::endl;
+			DownloadTile(items[i], hpImages, jkey_series, jkey_series,aspectRatio);
 		}
 
 	}
-
 	HomepageElements[containerTitle.GetString()] = hpImages;
 
+}
+
+void ResourceManager::DownloadTile(const rapidjson::Value& itemContainer, std::vector<HomepageImage>& imageRecord,const char* urlKey, const char* imageKey, const char* aspectRatio)
+{
+	using namespace rapidjson;
+
+	const Value& imageUrl = itemContainer[jkey_image][jkey_tile][aspectRatio][urlKey][jkey_default][jkey_url];
+	const Value& titleName = itemContainer[jkey_text][jkey_title][jkey_full][imageKey][jkey_default][jkey_content];
+
+	std::string name(titleName.GetString());
+	std::string filePath("textures/" + name + ".jpg");
+	std::string url(imageUrl.GetString());
+
+	HomepageImage img{ name,filePath,url };
+
+	imageRecord.push_back(img);
+
+	DownloadImageFromURL(imageUrl.GetString(), filePath);
+
+	OTG_LOG(titleName.GetString() << " : " << imageUrl.GetString());
 }

@@ -10,15 +10,16 @@
 TextureRenderer *Renderer;
 TextRenderer *TextRend;
 
-Tile *sampleTile;
+Tile *selectedTile;
 
 Homepage::Homepage(unsigned int width, unsigned int height, unsigned int targetResolutionWidth, unsigned int targetResolutionHeight, float tileGroupYSpace, float maxInputDelay) : State(HOMEPAGE_LOADING), Width(width),Height(height),Keys(),ResolutionWidth(targetResolutionWidth),ResolutionHeight(targetResolutionHeight),TileGroups(),TileGroupYSpace(tileGroupYSpace),CurrentColumnSelection(0),CurrentRowSelection(0),MaxInputDelay(maxInputDelay)
 {
-      
+     
 }
 Homepage::~Homepage()
 {
       delete Renderer;
+	  delete TextRend;
 }
 void Homepage::DrawSplashScreen()
 {
@@ -30,16 +31,20 @@ void Homepage::DrawSplashScreen()
 	Renderer = new TextureRenderer(ResourceManager::GetShader("sprite"));
 	ResourceManager::LoadTexture("textures/DisneyTitle.jpg", false, "DisneyTitle");
 	ResourceManager::LoadTexture("textures/DisneyTitleBackground.jpg", false, "DisneyTitleBackground");
+	ResourceManager::LoadTexture("textures/SelectionBox.png", true, "SelectionBox");
 	TextRend = new TextRenderer(this->Width,this->Height);
 	TextRend->Load("fonts/HELN.ttf",24);
 	Renderer->DrawTexture(ResourceManager::GetTexture("DisneyTitle"),
 		glm::vec2(0.0f, 0.0f), glm::vec2(this->Width, this->Height));
+
+	
+	
 }
 void Homepage::Init()
 {
 
     this->State = HOMEPAGE_LOADING;
-	ResourceManager::PrepareHompageData("https://cd-static.bamgrid.com/dp-117731241344/home.json");
+	ResourceManager::PrepareHompageData("https://cd-static.bamgrid.com/dp-117731241344/home.json", "1.78");
 
 	float xScale = ResolutionWidth / Width;
 	float yScale = ResolutionHeight / Height;
@@ -106,6 +111,7 @@ void Homepage::Update(float dt)
 			if (tg.RowPosition == CurrentRowSelection && tile.ColumnPosition == CurrentColumnSelection)
 			{
 				tile.DisplaySize = tile.SelectedSize;
+				selectedTile = &tile;
 			}
 			else
 			{
@@ -136,6 +142,15 @@ void Homepage::Render()
 	{
 		Renderer->DrawTexture(ResourceManager::GetTexture("DisneyTitleBackground"),
 			glm::vec2(0.0f, 0.0f), glm::vec2(this->Width, this->Height));
+
+		if (selectedTile != nullptr)
+		{
+		    glm::vec2 pos(selectedTile->Position.x -1.5,selectedTile->Position.y - 1.5f);
+			Renderer->DrawTexture(ResourceManager::GetTexture("SelectionBox"),
+				pos,
+				selectedTile->Size*1.12f);
+			
+		}
 
 		for (auto& tg : TileGroups)
 		{

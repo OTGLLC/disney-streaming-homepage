@@ -1,9 +1,6 @@
 #ifndef RESOURCE_MANAGER_H
 #define RESOURCE_MANAGER_H
 
-
-
-
 #include <map>
 #include <vector>
 #include <string>
@@ -65,7 +62,7 @@ private:
 
 	static void GetContainerDetails(const rapidjson::Value& containerSet, const char* aspectRatio);
 	
-
+	static void DownloadTile(const rapidjson::Value& itemContainer, std::vector<HomepageImage>& imageRecord,const char* urlKey, const char* imageKey,const char* aspectRatio);
 };
 
 #endif
