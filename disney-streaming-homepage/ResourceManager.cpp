@@ -25,6 +25,8 @@ const char* jconfig_RENDERW = "RENDER_RESOLUION_WIDTH";
 const char* jconfig_RENDERH = "RENDER_RESOLUION_HEIGHT";
 const char* jconfig_TILE_Y = "TILE_GROUP_Y_SPACE";
 const char* jconfig_INPUT_DELAY = "MAX_INPUT_DELAY";
+const char* jconfig_DEFAULT_FONT_SIZE= "REOLUTION_DEFAULT_FONT_SIZE";
+const char* jconfig_TEXT_Y_OFFSET = "TEXT_Y_POSITION_OFFSET";
 
 const char* jkey_series = "series";
 const char* jkey_tile = "tile";
@@ -93,6 +95,12 @@ std::map<std::string, std::vector<ResourceManager::HomepageImage>> ResourceManag
 
 	Value& inputD = d[jconfig_INPUT_DELAY];
 	config.MaxInputDelay = inputD.GetFloat();
+
+	Value& defFontSize = d[jconfig_DEFAULT_FONT_SIZE];
+	config.ResolutionDefaultFontSize = defFontSize.GetInt();
+
+	Value& textYOffset = d[jconfig_TEXT_Y_OFFSET];
+	config.TextYPositionOffset = textYOffset.GetFloat();
 
 	return config;
 }

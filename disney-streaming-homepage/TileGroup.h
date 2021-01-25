@@ -21,7 +21,7 @@ class TileGroup
 	  void SetTilePosition();
 	  void SetTileGroupPosition(float xPos, float yPos);
 	  void DrawTiles(TextureRenderer& renderer);
-	  void DrawText(TextRenderer& textRend);
+	  void DrawText(TextRenderer& textRend, float& textYPositionOffset);
 
 	
 	  

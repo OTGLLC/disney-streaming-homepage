@@ -30,7 +30,7 @@ void TileGroup::DrawTiles(TextureRenderer& renderer)
 		tile.Draw(renderer);
 	}
 }
-void TileGroup::DrawText(TextRenderer& textRend)
+void TileGroup::DrawText(TextRenderer& textRend, float& textYPositionOffset)
 {
-     textRend.RenderText(this->TileGroupName,this->xPosition,this->yPosition - 50., 1.0f);
+     textRend.RenderText(this->TileGroupName,this->xPosition,this->yPosition - textYPositionOffset, 1.0f);
 }

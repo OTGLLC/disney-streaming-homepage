@@ -9,7 +9,9 @@ public:
 	unsigned int ResolutionWidth;
 	unsigned int ResolutionHeight;
 	unsigned int TileYSpace;
+	unsigned int ResolutionDefaultFontSize;
 	float MaxInputDelay;
+	float TextYPositionOffset;
 
 };
 #endif // ifndef HOMEPAGECONFIGURATION_H

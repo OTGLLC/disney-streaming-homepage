@@ -4,7 +4,7 @@
 #include<GLFW/include/glfw3.h>
 
 
-
+#include "Macros.h"
 #include "Homepage.h"
 #include "ResourceManager.h"
 #include "TileGroup.h"
@@ -34,10 +34,11 @@ float aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 //Homepage hPage(SCREEN_WIDTH, SCREEN_HEIGHT, RENDER_RESOLUION_WIDTH, RENDER_RESOLUION_HEIGHT, TILE_GROUP_Y_SPACE, MAX_INPUT_DELAY);
 
 Homepage hPage;
-
+HomepageConfiguration hpConfig;
 int main()
 {
-	hPage.LoadConfig(ResourceManager::LoadHomepageConfiguration());
+	hpConfig = ResourceManager::LoadHomepageConfiguration();
+	hPage.LoadConfig(hpConfig);
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -48,30 +49,28 @@ int main()
 #endif
 	glfwWindowHint(GLFW_RESIZABLE, false);
 
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(hpConfig.ScreenWidth, hpConfig.ScreenHeight, "Homepage", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
+
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
+		OTG_LOG("Failed to initialize GLAD");
+
 		return -1;
 	}
 
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// OpenGL configuration
-	// --------------------
 
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glViewport(0, 0, hpConfig.ScreenWidth, hpConfig.ScreenHeight);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	hPage.DrawSplashScreen();
+	hPage.PerformPreloading();
 	glfwSwapBuffers(window);
 
 	hPage.Init();
@@ -81,23 +80,18 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		// calculate delta time
-		// --------------------
+		
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		glfwPollEvents();
 
-		// manage user input
-		// -----------------
+		
 		hPage.ProcessInput(deltaTime);
 
-		// update game state
-		// -----------------
+		
 		hPage.Update(deltaTime);
 
-		// render
-		// ------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		hPage.Render();
@@ -105,8 +99,7 @@ int main()
 		glfwSwapBuffers(window);
 	}
 
-	// delete all resources as loaded using the resource manager
-	// ---------------------------------------------------------
+
 	ResourceManager::Clear();
 
 	glfwTerminate();
@@ -116,7 +109,7 @@ int main()
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	// when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
+
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 	if (key >= 0 && key < 1024)
@@ -131,8 +124,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 
-	// make sure the viewport matches the new window dimensions; note that width and 
-	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	glViewport(0, 0, width, height);
 }
 

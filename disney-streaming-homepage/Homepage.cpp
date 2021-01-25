@@ -25,9 +25,16 @@ void Homepage::LoadConfig(const HomepageConfiguration& config)
 	this->ResolutionHeight = config.ResolutionHeight;
 	this->TileGroupYSpace = config.TileYSpace;
 	this->MaxInputDelay = config.MaxInputDelay;
+	this->ResolutionDefaultFontSize = config.ResolutionDefaultFontSize;
+	this->TextYPositionOffset = config.TextYPositionOffset;
+
 }
-void Homepage::DrawSplashScreen()
+
+void Homepage::PerformPreloading()
 {
+	_displayXscale = ResolutionWidth / Width;
+	_displayYscale = ResolutionHeight / Height;
+
 	ResourceManager::LoadShader("shaders/sprite.vs", "shaders/sprite.frag", nullptr, "sprite");
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->Width),
 		static_cast<float>(this->Height), 0.0f, -1.0f, 1.0f);
@@ -38,7 +45,7 @@ void Homepage::DrawSplashScreen()
 	ResourceManager::LoadTexture("textures/DisneyTitleBackground.jpg", false, "DisneyTitleBackground");
 	ResourceManager::LoadTexture("textures/SelectionBox.png", true, "SelectionBox");
 	TextRend = new TextRenderer(this->Width,this->Height);
-	TextRend->Load("fonts/HELN.ttf",24);
+	TextRend->Load("fonts/HELN.ttf", this->ResolutionDefaultFontSize);
 	Renderer->DrawTexture(ResourceManager::GetTexture("DisneyTitle"),
 		glm::vec2(0.0f, 0.0f), glm::vec2(this->Width, this->Height));
 
@@ -51,11 +58,10 @@ void Homepage::Init()
     this->State = HOMEPAGE_LOADING;
 	ResourceManager::PrepareHompageData("https://cd-static.bamgrid.com/dp-117731241344/home.json", "1.78");
 
-	float xScale = ResolutionWidth / Width;
-	float yScale = ResolutionHeight / Height;
-	PopulateTileGroups(xScale,yScale);
+	
+	PopulateTileGroups(_displayXscale,_displayYscale);
 
-	InitializeTileGroupPositions();
+	InitializeTileGroupPositions(_displayXscale, _displayYscale);
 	
 	this->State = HOMEPAGE_ACTIVE;
 }
@@ -126,14 +132,14 @@ void Homepage::Update(float dt)
 		
 	}
 }
-void Homepage::InitializeTileGroupPositions()
+void Homepage::InitializeTileGroupPositions(float xScale, float yScale)
 {
 	for (int i = 0; i < TileGroups.size(); i++)
 	{
 		TileGroup& tg = TileGroups[i];
 
 		float xPos = 0;
-		float yPosOffset = (TileGroupYSpace * i)+100.0f;
+		float yPosOffset = (TileGroupYSpace * i)+TileGroupYSpace;
 		
 		float yPos = (tg.RowPosition * tg.TileHeight) + yPosOffset;
 		tg.SetTileGroupPosition(xPos,yPos);
@@ -160,7 +166,7 @@ void Homepage::Render()
 
 		for (auto& tg : TileGroups)
 		{
-			tg.DrawText(*TextRend);
+			tg.DrawText(*TextRend,TextYPositionOffset);
 			tg.DrawTiles(*Renderer);
 		}
 
@@ -185,7 +191,7 @@ void Homepage::PopulateTileGroups(float xScale, float yScale)
 			tileColumnPosition++;
 		}
 		
-		TileGroup tg = TileGroup(tiles,x.first.c_str(),tileGroupRowPosition,80.0f,tileHeight);
+		TileGroup tg = TileGroup(tiles,x.first.c_str(),tileGroupRowPosition,160.f/xScale,tileHeight);
 		TileGroups.push_back(tg);
 		tileGroupRowPosition++;
 		tileColumnPosition = 0;
