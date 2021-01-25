@@ -12,14 +12,19 @@ TextRenderer *TextRend;
 
 Tile *selectedTile;
 
-Homepage::Homepage(unsigned int width, unsigned int height, unsigned int targetResolutionWidth, unsigned int targetResolutionHeight, float tileGroupYSpace, float maxInputDelay) : State(HOMEPAGE_LOADING), Width(width),Height(height),Keys(),ResolutionWidth(targetResolutionWidth),ResolutionHeight(targetResolutionHeight),TileGroups(),TileGroupYSpace(tileGroupYSpace),CurrentColumnSelection(0),CurrentRowSelection(0),MaxInputDelay(maxInputDelay)
-{
-     
-}
 Homepage::~Homepage()
 {
       delete Renderer;
 	  delete TextRend;
+}
+void Homepage::LoadConfig(const HomepageConfiguration& config)
+{
+	this->Width = config.ScreenWidth;
+	this->Height = config.ScreenHeight;
+	this->ResolutionWidth = config.ResolutionWidth;
+	this->ResolutionHeight = config.ResolutionHeight;
+	this->TileGroupYSpace = config.TileYSpace;
+	this->MaxInputDelay = config.MaxInputDelay;
 }
 void Homepage::DrawSplashScreen()
 {
@@ -137,12 +142,13 @@ void Homepage::InitializeTileGroupPositions()
 }
 void Homepage::Render()
 {
-	
+	//TODO: Implement a proper FSM to handle app state and transitions
 	if (this->State == HOMEPAGE_ACTIVE)
 	{
 		Renderer->DrawTexture(ResourceManager::GetTexture("DisneyTitleBackground"),
 			glm::vec2(0.0f, 0.0f), glm::vec2(this->Width, this->Height));
 
+	    //TODO: Handler tile scale and border with a shader
 		if (selectedTile != nullptr)
 		{
 		    glm::vec2 pos(selectedTile->Position.x -1.5,selectedTile->Position.y - 1.5f);

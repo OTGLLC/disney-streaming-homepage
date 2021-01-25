@@ -3,11 +3,15 @@
 
 #include <vector>
 #include "TileGroup.h"
+#include "ResourceManager.h"
+#include "HomepageConfiguration.h"
+
 enum HomepageState
 {
 	HOMEPAGE_LOADING,
 	HOMEPAGE_ACTIVE
 };
+
 
 class Homepage
 {
@@ -18,9 +22,9 @@ public:
 	float MaxInputDelay;
 	unsigned int Width, Height, ResolutionWidth, ResolutionHeight,CurrentColumnSelection,CurrentRowSelection;
 	std::vector<TileGroup> TileGroups;
-
-	Homepage(unsigned int width, unsigned int height,unsigned int targetResolutionWidth,unsigned int targetResolutionHeight, float tileGroupYSpace, float maxInputDelay );
+	
 	~Homepage();
+	void LoadConfig(const HomepageConfiguration& config);
 	void DrawSplashScreen();
 	void PopulateTileGroups(float xScale, float yScale);
 	void Init();

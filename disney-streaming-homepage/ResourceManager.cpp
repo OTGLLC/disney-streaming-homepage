@@ -6,6 +6,7 @@
 #include <fstream>
 
 #define STB_IMAGE_IMPLEMENTATION
+#include "HomepageConfiguration.h"
 #include "Macros.h"
 #include "stb_image.h"
 #include "curl/include/curl/curl.h"
@@ -17,6 +18,13 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
+
+const char* jconfig_SCREENW = "SCREEN_WIDTH";
+const char* jconfig_SCREENH = "SCREEN_HEIGHT";
+const char* jconfig_RENDERW = "RENDER_RESOLUION_WIDTH";
+const char* jconfig_RENDERH = "RENDER_RESOLUION_HEIGHT";
+const char* jconfig_TILE_Y = "TILE_GROUP_Y_SPACE";
+const char* jconfig_INPUT_DELAY = "MAX_INPUT_DELAY";
 
 const char* jkey_series = "series";
 const char* jkey_tile = "tile";
@@ -47,7 +55,47 @@ std::map<std::string, Texture>					ResourceManager::Textures;
 std::map<std::string, Shader>					ResourceManager::Shaders;
 std::map<std::string, std::vector<ResourceManager::HomepageImage>> ResourceManager::HomepageElements;
 
+ HomepageConfiguration ResourceManager::LoadHomepageConfiguration()
+{
+    HomepageConfiguration config;
 
+	using namespace rapidjson;
+	Document d;
+	std::string temp;
+	std::string json;
+	std::ifstream fstream("config/homepage.config");
+	if (fstream)
+	{
+		while (getline(fstream, temp))
+		{
+			json += temp;
+		}
+		fstream.close();
+
+	}
+
+	d.Parse(json.c_str());
+
+	Value& sWidth = d[jconfig_SCREENW];
+	config.ScreenWidth = sWidth.GetInt();
+
+	Value& sHeight = d[jconfig_SCREENH];
+	config.ScreenHeight = sHeight.GetInt();
+
+	Value& rWidth = d[jconfig_RENDERW];
+	config.ResolutionWidth = rWidth.GetInt();
+
+	Value& rHeight = d[jconfig_RENDERH];
+	config.ResolutionHeight = rHeight.GetInt();
+
+	Value& tileY = d[jconfig_TILE_Y];
+	config.TileYSpace = tileY.GetFloat();
+
+	Value& inputD = d[jconfig_INPUT_DELAY];
+	config.MaxInputDelay = inputD.GetFloat();
+
+	return config;
+}
 Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name)
 {
 	Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);

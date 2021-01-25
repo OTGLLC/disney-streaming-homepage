@@ -10,11 +10,12 @@
 #include "rapidjson/document.h"
 #include "Texture.h"
 #include "Shader.h"
-
+#include "HomepageConfiguration.h"
 
 
 class ResourceManager
 {
+	
 	struct HomepageImage
 	{
 		public:
@@ -23,13 +24,13 @@ class ResourceManager
 		std::string ImageUrl;
 
 	};
+
 public:
     
 	// resource storage
 	static std::map<std::string, Shader>					Shaders;
 	static std::map<std::string, Texture>					Textures;
 	static std::map<std::string, std::vector<HomepageImage>> HomepageElements;
-
 	 //loads (and generates) a shader program from file loading vertex, fragment (and geometry) shader's source code. If gShaderFile is not nullptr, it also loads a geometry shader
 	static Shader LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name);
 
@@ -42,6 +43,8 @@ public:
 	static void PrepareHompageData(const char* url, const char* aspectRatio);
 	
 	static void Clear();
+
+	static HomepageConfiguration LoadHomepageConfiguration();
 private:
 	
 	ResourceManager() { }
@@ -63,6 +66,7 @@ private:
 	static void GetContainerDetails(const rapidjson::Value& containerSet, const char* aspectRatio);
 	
 	static void DownloadTile(const rapidjson::Value& itemContainer, std::vector<HomepageImage>& imageRecord,const char* urlKey, const char* imageKey,const char* aspectRatio);
+
 };
 
 #endif

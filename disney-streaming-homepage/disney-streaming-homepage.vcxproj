@@ -23,7 +23,7 @@
     <ClCompile Include="DisplayObject.cpp" />
     <ClCompile Include="Homepage.cpp" />
     <ClCompile Include="HomepageMain.cpp" />
-    <ClCompile Include="HomepageObject.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Source\HellowWindow.cpp" />
@@ -36,7 +36,8 @@
   <ItemGroup>
     <ClInclude Include="DisplayObject.h" />
     <ClInclude Include="Homepage.h" />
-    <ClInclude Include="HomepageObject.h" />
+    <ClInclude Include="HomepageConfiguration.h" />
+    <ClInclude Include="Macros.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
