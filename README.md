@@ -1,4 +1,5 @@
 # disney-streaming-homepage
+Fun weekend project to dig into OpenGL for a media based, non-gaming application. Its still rough but I am continuing to work on it over time.
 
 1. You can set the size of the window to either (1920x1080) or (960x540) by replacing a config file. You can also manually adjust the parameters within the config file; however, the rendering is not set up to correctly handler independent resolution rendering. 
 2. The project uses a data cache for shaders, textures on config files. You can find the folders within their respective release folders
